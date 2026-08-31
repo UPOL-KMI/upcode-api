@@ -1,42 +1,17 @@
 parameters:
   api:
-    address: "https://your.recodex.domain/api"
+    address: "https://your.recodex.domain/api"  # this needs to be set based on your actual domain and path to the API
 
   webapp:
-    address: "https://your.recodex.domain"
+    address: "https://your.recodex.domain"  # this needs to be set based on your actual domain and path to the web frontend
 
-  async:
-    pollingInterval: 10 # seconds (you may set this to larger values if inotify wake-ups are allowed)
-    # inotify can wake the async worker (immediately once an async operation is issued)
-    inotify: false # set to true only if your system (and PHP) supports inotify (not available on Windows, extension required on Linux)
-
-  fileStorage: # where the local files are being stored
-    local:
-      root: %appDir%/../storage/local # this should be replaced with path to existing directory
-    hash:
-      root: %appDir%/../storage/hash # this should be replaced with path to existing directory
-
-  submissions:
-    locked: false  # if set to true, the API will not be accepting submissions (and it will be indicated in can-submit/permission hints)
-    lockedReason:  # Localized message with reason displayed in UI, why the submissions are locked (ignored if locked == false)
-      cs: "Odevzdávání řešení bylo zablokováno v konfiguraci aplikace."
-      en: "Submitting new solutions is currently locked out in the application configuration."
-
-  accessManager:
-    issuer: "%webapp.address%"
-    audience: "%webapp.address%"
-    expiration: 604800  # 7 days in seconds
-    invitationExpiration: 604800  # of an invitation token (7 days in seconds)
-    verificationKey: "recodex-123"	# this should be a really secret string and sufficiently long (for HS256, at least 32 characters is required)
-    tokenCookieName: 'recodex_accessToken'  # web-app config value 'PERSISTENT_TOKENS_KEY_PREFIX' + '_accessToken', null if only Authorization header is used
-
-  broker:
+  broker:  # this needs to match your broker configuration
     address: "tcp://127.0.0.1:9658"
     auth:
       username: "user"  # these credentials must match credentials
       password: "pass"  # in broker configuration file
 
-  monitor:
+  monitor: # this needs to match your monitor configuration
     address: "wss://your.recodex.domain:443/ws"
 
   workerFiles:  # configuration for worker-files endpoint (direct access from worker to the core to upload/download files)
@@ -46,15 +21,19 @@ parameters:
       password: "codex"
     removalThreshold: "1 day"  # threshold for GC
 
-  localRegistration:
-    enabled: false  # set to true if you want to permit simple local registration
+  accessManager:
+    issuer: "%webapp.address%"
+    audience: "%webapp.address%"
+    expiration: 604800  # 7 days in seconds
+    invitationExpiration: 604800  # of an invitation token (7 days in seconds)
+    verificationKey: "TODO-fill-here-a-secret-key-at-least-32-characters-long"	# this should be a really secret string and sufficiently long (for HS256, at least 32 characters is required)
+    tokenCookieName: 'recodex_accessToken'  # web-app config value 'PERSISTENT_TOKENS_KEY_PREFIX' + '_accessToken', null if only Authorization header is used
 
-  externalAuthenticators:
-    - name: "cas-auth-ext"
-      jwtSecret: "secretStringSharedWithExternAuth"
-      jwtAlgorithm: HS256 # optional, HS256 is default
-      expiration: 60 # seconds passed since iat
-      extraIds: []  # additional service types whose IDs may be provided as extra IDs in the auth token
+  fileStorage: # where the local files are being stored
+    local:
+      root: %appDir%/../storage/local # this should be replaced with path to existing directory
+    hash:
+      root: %appDir%/../storage/hash # this should be replaced with path to existing directory
 
   emails:
     footerUrl: "%webapp.address%"
@@ -63,6 +42,21 @@ parameters:
     #debugMode: true  # in debug mode, no messages are sent via SMTP (you should also active archiving)
     #archivingDir: "%appDir%/../log/email-debug"  # a directory where copies of all emails sent are stored (in text files)
     
+  submissions:
+    # Temporary lock-out the submissions when doing maintenance on workers
+    locked: false  # if set to true, the API will not be accepting submissions (and it will be indicated in can-submit/permission hints)
+    lockedReason:  # Localized message with reason displayed in UI, why the submissions are locked (ignored if locked == false)
+      cs: "Odevzdávání řešení bylo zablokováno v konfiguraci aplikace."
+      en: "Submitting new solutions is currently locked out in the application configuration."
+
+  localRegistration:
+    enabled: false  # set to true if you want to permit simple local registration
+
+  async:
+    pollingInterval: 10 # seconds (you may set this to larger values if inotify wake-ups are allowed)
+    # inotify can wake the async worker (immediately once an async operation is issued)
+    inotify: false # set to true only if your system (and PHP) supports inotify (not available on Windows, extension required on Linux)
+
   exercises:
     # Restrictions
     testCountLimit: 100                    # maximal number of tests in one exercise
@@ -77,7 +71,14 @@ parameters:
     # Please note that the length of the auth. token expiration should be considered (readonly tokens may expire after 1 year).
     threshold: "2 years"
 
-  extensions:  # 3rd party tools which are linked from UI and can cooperate with ReCodEx
+  externalAuthenticators:  # 3rd party authentication services (remove if no external authenticators are used)
+    - name: "cas-auth-ext"
+      jwtSecret: "secretStringSharedWithExternAuth"
+      jwtAlgorithm: HS256 # optional, HS256 is default
+      expiration: 60 # seconds passed since iat
+      extraIds: []  # additional service types whose IDs may be provided as extra IDs in the auth token
+
+  extensions:  # 3rd party tools which are linked from UI and can cooperate with ReCodEx (remove if no extensions are installed)
     - id: "ext-identifier"
       caption:  # to be displayed in UI; could be also single string (for all localizations)
         cs: "Český popisek"
