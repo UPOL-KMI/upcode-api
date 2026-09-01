@@ -8,8 +8,8 @@ parameters:
   broker:  # this needs to match your broker configuration
     address: "tcp://127.0.0.1:9658"
     auth:
-      username: "user"  # these credentials must match credentials
-      password: "pass"  # in broker configuration file
+      username: "rebroker"  # these credentials must match credentials
+      password: "pass"      # in broker configuration file (notifier username and password)
 
   monitor: # this needs to match your monitor configuration
     address: "wss://your.recodex.domain:443/ws"
