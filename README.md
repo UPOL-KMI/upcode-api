@@ -1,3 +1,34 @@
+<!-- UPcode fork notice -- keep this at the top. -->
+
+> ## About this fork
+>
+> This is a fork of [ReCodEx/api](https://github.com/ReCodEx/api), maintained by the **Department
+> of Computer Science, Faculty of Science, Palacký University Olomouc** as part of **UPcode** — the
+> department's deployment of ReCodEx, adapted to its needs.
+>
+> Not affiliated with, nor endorsed by, the ReCodEx Team. Original copyright (© 2016 ReCodEx Team)
+> and the MIT licence are unchanged; see `LICENSE`, and leave it that way.
+>
+> **Branches**
+>
+> | Branch   | What it is                                                             |
+> | -------- | ---------------------------------------------------------------------- |
+> | `master` | Untouched mirror of `ReCodEx/api`. Nothing of ours is committed here.   |
+> | `upcode` | Our integration branch, and the default. Changes from upstream live here. |
+>
+> `upcode` starts at `7471b71` rather than at the tip of `master`, because that is the commit the
+> deployment is verified against — see `COMPATIBILITY.md` in `upcode-deploy`. Upstream commits are
+> merged in deliberately, not inherited.
+>
+> **What is expected to change here.** Three compatibility fixes that today live as a build-time
+> patch script in the deployment repository (`services/api/patch-compatibility.php`) and belong in
+> the source instead: ~104 pre-2022 migrations calling `getDatabasePlatform()->getName()`, which
+> `doctrine/dbal` 4 removed; several of those same migrations mixing DDL with an explicit
+> transaction, which desyncs Doctrine's savepoint bookkeeping on MySQL/MariaDB; and
+> `RuntimeImport`'s own `--silent` option, which now collides with one `symfony/console` registers
+> globally. Each is a fix against current upstream `master`, not a local misconfiguration, so each
+> is a candidate to send upstream.
+
 # ReCodEx Core and REST API
 
 [![Build Status](https://github.com/ReCodEx/api/workflows/CI/badge.svg)](https://github.com/ReCodEx/api/actions)
