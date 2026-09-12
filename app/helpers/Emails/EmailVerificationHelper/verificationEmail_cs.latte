@@ -1,6 +1,6 @@
 {emailSubject}Ověření emailové adresy - {$email}{/emailSubject}
 {if $firstTime}
-<h3>Vítejte v ReCodExu</h3>
+<h3>Vítejte v aplikaci {$siteName}</h3>
 <p>
   Váš účet asociovaný s adresou {$email} byl úspěšně vytvořen.
 </p>
@@ -8,11 +8,11 @@
 <h3>Ověření emailové adresy {$email}</h3>
 {/if}
 <p>
-    ReCodEx by rád ověřil vaší emailovou adresu.
-    Ověření adresy je nezbytné pro korektní zajištění fungování všech služeb ReCodExu.
+    Aplikace {$siteName} by ráda ověřila vaši e-mailovou adresu.
+    Ověření adresy je nezbytné pro správné fungování všech jejích služeb.
     Platnost adresy můžete potvrdit kliknutím na následující odkaz: <a href="{$link}">{$link}</a>.
     Tento odkaz bude platný do {$expiresAfter}.
-    Nový odkaz vám může být zaslán, pokud znovu požádáte o validaci emailu v aplikaci ReCodEx.
+    Nový odkaz vám může být zaslán, pokud o ověření e-mailu požádáte v aplikaci {$siteName} znovu.
 </p>
 <hr>
 <p>
