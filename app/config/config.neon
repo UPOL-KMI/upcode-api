@@ -18,6 +18,11 @@ parameters:
 
   api:
     address: "https://your.recodex.domain/api"
+    # Where a **worker** reaches this API to fetch a submission and upload its results. Usually the
+    # same address, and it defaults to it; a containerised deployment overrides it with an address
+    # that resolves on the internal network, because the public one may not (a compose stack whose
+    # domain is `localhost` cannot resolve it anywhere but the container asking).
+    workerAddress: %api.address%
     name: "ReCodEx API"
     description: "ReCodEx Code Examiner - API Server"
     versionFormat: "{tag}"
@@ -396,7 +401,7 @@ services:
   - App\Helpers\TmpFilesHelper(%tempDir%)
   - App\Helpers\FileStorage\LocalFileStorage(@App\Helpers\TmpFilesHelper, %fileStorage.local%)
   - App\Helpers\FileStorage\LocalHashFileStorage(%fileStorage.hash%)
-  - App\Helpers\FileStorageManager(@App\Helpers\FileStorage\LocalFileStorage, @App\Helpers\FileStorage\LocalHashFileStorage, @App\Helpers\TmpFilesHelper, %api.address%)
+  - App\Helpers\FileStorageManager(@App\Helpers\FileStorage\LocalFileStorage, @App\Helpers\FileStorage\LocalHashFileStorage, @App\Helpers\TmpFilesHelper, %api.workerAddress%)
   - App\Helpers\WebappLinks(%webapp.address%, %linkTemplates%)
 
   # emails
