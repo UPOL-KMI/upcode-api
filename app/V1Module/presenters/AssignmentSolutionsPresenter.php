@@ -17,7 +17,9 @@ use App\Exceptions\NotFoundException;
 use App\Exceptions\NotReadyException;
 use App\Helpers\EvaluationLoadingHelper;
 use App\Helpers\FileStorageManager;
-use App\Helpers\Notifications\PointsChangedEmailsSender;
+use App\Async\Dispatcher;
+use App\Async\Handler\PointsNotificationJobHandler;
+use App\Model\Repository\AsyncJobs;
 use App\Helpers\Notifications\SolutionFlagChangedEmailSender;
 use App\Helpers\Validators;
 use App\Model\Entity\AssignmentSolutionSubmission;
@@ -120,10 +122,16 @@ class AssignmentSolutionsPresenter extends BasePresenter
     public $groupViewFactory;
 
     /**
-     * @var PointsChangedEmailsSender
+     * @var AsyncJobs
      * @inject
      */
-    public $pointsChangedEmailsSender;
+    public $asyncJobs;
+
+    /**
+     * @var Dispatcher
+     * @inject
+     */
+    public $dispatcher;
 
     /**
      * @var SolutionFlagChangedEmailSender
@@ -386,7 +394,14 @@ class AssignmentSolutionsPresenter extends BasePresenter
 
         $changedSolutions = []; // list of changed solutions reported back in payload
         if ($oldBonusPoints !== $newBonusPoints || $oldOverriddenPoints !== $overriddenPoints) {
-            $this->pointsChangedEmailsSender->solutionPointsUpdated($solution);
+            // notified after a delay, so that a reviewer correcting their own typing writes once
+            PointsNotificationJobHandler::scheduleAsyncJob(
+                $this->dispatcher,
+                $this->asyncJobs,
+                $this->getCurrentUser(),
+                PointsNotificationJobHandler::KIND_SOLUTION,
+                $solution->getId()
+            );
             $changedSolutions[] = $this->assignmentSolutionViewFactory->getSolutionData($solution);
             if ($assignment) {
                 $best = $this->assignmentSolutions->findBestSolution($assignment, $author);

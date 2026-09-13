@@ -89,6 +89,26 @@ trait ExerciseData
     }
 
     /**
+     * The runtime that takes any file and runs none of the student's code.
+     */
+    public const DATA_ONLY_ENVIRONMENT = "data-linux";
+
+    /**
+     * Whether this is a data-only exercise: one a teacher collects documents, data or measurements
+     * through rather than programs.
+     *
+     * Nothing of the student's is executed in such an exercise -- only the judge runs -- so the
+     * things ReCodEx demands of an exercise in order to trust its automatic marking do not all
+     * apply to it. It is recognised by its runtime environments alone, because that is the only
+     * place the distinction exists: an exercise whose every environment is the data-only one.
+     */
+    public function isDataOnly(): bool
+    {
+        $environments = $this->getRuntimeEnvironmentsIds();
+        return $environments !== [] && array_diff($environments, [self::DATA_ONLY_ENVIRONMENT]) === [];
+    }
+
+    /**
      * @var Collection
      */
     #[ORM\ManyToMany(targetEntity: HardwareGroup::class)]

@@ -20,6 +20,16 @@
 > deployment is verified against — see `COMPATIBILITY.md` in `upcode-deploy`. Upstream commits are
 > merged in deliberately, not inherited.
 >
+> **What has changed here so far.** Four behaviour changes, each made for this deployment and each
+> a candidate to argue upstream rather than a local misconfiguration:
+>
+> | Change | Why |
+> | --- | --- |
+> | New accounts default to Czech (`User::__construct`) | Every notification e-mail is rendered in the recipient's `defaultLanguage`, and upstream's `"en"` meant a student who never opened their settings was written to in a language the course is not taught in. |
+> | Points notifications are deferred a minute and coalesced (`PointsNotificationJobHandler`) | Upstream sends them inside the request that changes the points, so a teacher who mistypes a number and corrects it writes to the student twice -- once with the wrong figure. |
+> | A data-only exercise needs no reference solution (`AssignmentsPresenter::actionCreate`) | A reference solution proves the automatic tests work. An exercise that runs none of the student's code has no such claim to check, and the demand is invisible until the assignment is refused. |
+> | `ExerciseData::isDataOnly()` | The notion the three above are written against: an exercise whose every runtime environment is `data-linux`. |
+>
 > **What is expected to change here.** Three compatibility fixes that today live as a build-time
 > patch script in the deployment repository (`services/api/patch-compatibility.php`) and belong in
 > the source instead: ~104 pre-2022 migrations calling `getDatabasePlatform()->getName()`, which

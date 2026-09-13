@@ -19,7 +19,9 @@ use App\Exceptions\NotFoundException;
 use App\Exceptions\FrontendErrorMappings;
 use App\Helpers\Localizations;
 use App\Helpers\Notifications\AssignmentEmailsSender;
-use App\Helpers\Notifications\PointsChangedEmailsSender;
+use App\Async\Dispatcher;
+use App\Async\Handler\PointsNotificationJobHandler;
+use App\Model\Repository\AsyncJobs;
 use App\Helpers\Validators;
 use App\Model\Entity\LocalizedShadowAssignment;
 use App\Model\Entity\ShadowAssignment;
@@ -82,10 +84,16 @@ class ShadowAssignmentsPresenter extends BasePresenter
     public $groupAcl;
 
     /**
-     * @var PointsChangedEmailsSender
+     * @var AsyncJobs
      * @inject
      */
-    public $pointsChangedEmailsSender;
+    public $asyncJobs;
+
+    /**
+     * @var Dispatcher
+     * @inject
+     */
+    public $dispatcher;
 
 
     public function checkDetail(string $id)
@@ -362,8 +370,15 @@ class ShadowAssignmentsPresenter extends BasePresenter
         );
         $this->shadowAssignmentPointsRepository->persist($pointsEntity);
 
-        // user was awarded with points, send an email
-        $this->pointsChangedEmailsSender->shadowPointsUpdated($pointsEntity);
+        // user was awarded with points, notify them -- after a delay, so that a teacher who
+        // mistypes the number and fixes it right away writes to the student once
+        PointsNotificationJobHandler::scheduleAsyncJob(
+            $this->dispatcher,
+            $this->asyncJobs,
+            $this->getCurrentUser(),
+            PointsNotificationJobHandler::KIND_SHADOW,
+            $pointsEntity->getId()
+        );
 
         $this->sendSuccessResponse($this->shadowAssignmentViewFactory->getPoints($pointsEntity));
     }
@@ -411,8 +426,15 @@ class ShadowAssignmentsPresenter extends BasePresenter
         $this->shadowAssignmentPointsRepository->flush();
 
         if ($oldPoints !== $points) {
-            // user points was updated, send an email
-            $this->pointsChangedEmailsSender->shadowPointsUpdated($pointsEntity);
+            // user points were updated, notify them -- a notification already waiting for this very
+            // row is left alone, because it reads the points when it runs and will report these
+            PointsNotificationJobHandler::scheduleAsyncJob(
+                $this->dispatcher,
+                $this->asyncJobs,
+                $this->getCurrentUser(),
+                PointsNotificationJobHandler::KIND_SHADOW,
+                $pointsEntity->getId()
+            );
         }
 
         $this->sendSuccessResponse($this->shadowAssignmentViewFactory->getPoints($pointsEntity));

@@ -296,11 +296,13 @@ services:
   - App\Async\Handler\PingAsyncJobHandler
   - App\Async\Handler\ResubmitAllAsyncJobHandler
   - App\Async\Handler\AssignmentNotificationJobHandler
+  - App\Async\Handler\PointsNotificationJobHandler
   - App\Async\Worker(%async%)
   - App\Async\Dispatcher(%async%, [
     @App\Async\Handler\PingAsyncJobHandler,
     @App\Async\Handler\ResubmitAllAsyncJobHandler,
     @App\Async\Handler\AssignmentNotificationJobHandler,
+    @App\Async\Handler\PointsNotificationJobHandler,
   ])
   
   # commands

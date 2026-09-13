@@ -44,7 +44,12 @@ class User
         $this->createdAt = new DateTime();
         $this->instances = new ArrayCollection([$instance]);
         $instance->addMember($this);
-        $this->settings = new UserSettings("en");
+        // Czech, not English: this fork serves a Czech faculty, and the language on these settings
+        // is what every notification e-mail is rendered in (see PointsChangedEmailsSender and the
+        // rest of Helpers/Emails). Upstream defaults to "en", which meant a student who never
+        // opened their settings was written to in a language the course is not taught in. Anyone
+        // can still change it in their own settings.
+        $this->settings = new UserSettings("cs");
         $this->login = null;
         $this->externalLogins = new ArrayCollection();
         $this->avatarUrl = null;

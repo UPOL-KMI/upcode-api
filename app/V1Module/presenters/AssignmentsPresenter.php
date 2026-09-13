@@ -617,7 +617,16 @@ class AssignmentsPresenter extends BasePresenter
             );
         }
 
-        if ($exercise->getReferenceSolutions(ReferenceExerciseSolution::VISIBILITY_PRIVATE)->isEmpty()) {
+        // **A data-only exercise is exempt.** A reference solution exists to prove that the tests
+        // and the limits work -- it is the author's own answer, run through the very pipeline a
+        // student's would be. An exercise that runs none of the student's code has no such claim to
+        // check, and demanding one means asking a teacher collecting essays to submit a specimen
+        // essay before anybody may be given the assignment. Reported on this deployment: nothing
+        // marks the exercise as broken, and then assigning it is refused.
+        if (
+            !$exercise->isDataOnly()
+            && $exercise->getReferenceSolutions(ReferenceExerciseSolution::VISIBILITY_PRIVATE)->isEmpty()
+        ) {
             throw new BadRequestException("Exercise '$exerciseId' does not have any reference solutions");
         }
 
