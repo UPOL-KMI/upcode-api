@@ -43,4 +43,12 @@ class UserFormat extends MetaFormat
 
     #[FPost(new VBool(), "If a use with the same name exists, this needs to be set to true.", required: false)]
     public ?bool $ignoreNameCollision;
+
+    #[FPost(
+        new VArray(),
+        "Identifiers of the user in other systems ( service => external ID ), recorded on the "
+        . "account when the invitation is accepted.",
+        required: false
+    )]
+    public ?array $externalIds;
 }

@@ -6,3 +6,9 @@
     to the reference solution of exercise '{$exercise}' submitted by '{$solutionAuthor}'.
     The comment can be found on the reference solution details page: <a href="{$link}">{$link}</a>.
 </p>
+{if $otherComments > 0}
+<p>
+    {$otherComments} further comment{if $otherComments > 1}s{/if} arrived in the meantime.
+    The one above is the most recent; the rest are on the same page.
+</p>
+{/if}

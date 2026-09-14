@@ -27,6 +27,8 @@
 > | --- | --- |
 > | New accounts default to Czech (`User::__construct`) | Every notification e-mail is rendered in the recipient's `defaultLanguage`, and upstream's `"en"` meant a student who never opened their settings was written to in a language the course is not taught in. |
 > | Points notifications are deferred a minute and coalesced (`PointsNotificationJobHandler`) | Upstream sends them inside the request that changes the points, so a teacher who mistypes a number and corrects it writes to the student twice -- once with the wrong figure. |
+> | Comment notifications are deferred five minutes and coalesced per discussion (`CommentNotificationJobHandler`) | Upstream writes to every member of the group inside the request that posts the comment, so ten people asking something in the same minute send ten e-mails to everybody else. The e-mail carries the newest comment and says how many others arrived with it. |
+> | Deprecation notices are not logged (`Bootstrap::boot`) | Nette 3.2 raises them for this application's own router construction on every request -- about 87 KB of `error.log` per request, measured, and a 35.7 GB log after six weeks of light use. It has to be set *after* `enableTracy()`, which resets `error_reporting` to `E_ALL` itself. |
 > | A data-only exercise needs no reference solution (`AssignmentsPresenter::actionCreate`) | A reference solution proves the automatic tests work. An exercise that runs none of the student's code has no such claim to check, and the demand is invisible until the assignment is refused. |
 > | `ExerciseData::isDataOnly()` | The notion the three above are written against: an exercise whose every runtime environment is `data-linux`. |
 >

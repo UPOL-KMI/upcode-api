@@ -9,8 +9,9 @@ use App\Helpers\MetaFormats\Validators\VString;
 use App\Helpers\MetaFormats\Validators\VUuid;
 use App\Exceptions\ForbiddenRequestException;
 use App\Exceptions\NotFoundException;
-use App\Helpers\Notifications\SolutionCommentsEmailsSender;
-use App\Helpers\Notifications\AssignmentCommentsEmailsSender;
+use App\Async\Dispatcher;
+use App\Async\Handler\CommentNotificationJobHandler;
+use App\Model\Repository\AsyncJobs;
 use App\Model\Entity\Comment;
 use App\Model\Entity\CommentThread;
 use App\Model\Repository\Assignments;
@@ -56,16 +57,16 @@ class CommentsPresenter extends BasePresenter
     public $referenceExerciseSolutions;
 
     /**
-     * @var SolutionCommentsEmailsSender
+     * @var AsyncJobs
      * @inject
      */
-    public $solutionCommentsEmailsSender;
+    public $asyncJobs;
 
     /**
-     * @var AssignmentCommentsEmailsSender
+     * @var Dispatcher
      * @inject
      */
-    public $assignmentCommentsEmailsSender;
+    public $dispatcher;
 
     /**
      * @param string $id
@@ -146,18 +147,29 @@ class CommentsPresenter extends BasePresenter
         $this->comments->persist($thread, false);
         $this->comments->flush();
 
-        // send email to all participants in comment thread
-        $assignment = $this->assignments->get($id);
-        $assignmentSolution = $this->assignmentSolutions->get($id);
-        $referenceSolution = $this->referenceExerciseSolutions->get($id);
-        if ($assignment) {
-            $this->assignmentCommentsEmailsSender->assignmentComment($assignment, $comment);
-        } elseif ($assignmentSolution) {
-            $this->solutionCommentsEmailsSender->assignmentSolutionComment($assignmentSolution, $comment);
-        } elseif ($referenceSolution) {
-            $this->solutionCommentsEmailsSender->referenceSolutionComment($referenceSolution, $comment);
-        } else {
-            // Nothing to do at the moment...
+        // Written to the thread's participants after a delay, and only once for a burst -- see
+        // CommentNotificationJobHandler. A private comment is nobody else's business, so it does
+        // not even schedule: the sender would refuse it five minutes later anyway.
+        if (!$isPrivate) {
+            $kind = null;
+            if ($this->assignments->get($id)) {
+                $kind = CommentNotificationJobHandler::KIND_ASSIGNMENT;
+            } elseif ($this->assignmentSolutions->get($id)) {
+                $kind = CommentNotificationJobHandler::KIND_SOLUTION;
+            } elseif ($this->referenceExerciseSolutions->get($id)) {
+                $kind = CommentNotificationJobHandler::KIND_REFERENCE_SOLUTION;
+            }
+
+            if ($kind !== null) {
+                CommentNotificationJobHandler::scheduleAsyncJob(
+                    $this->dispatcher,
+                    $this->asyncJobs,
+                    $user,
+                    $kind,
+                    $id,
+                    $comment->getPostedAt()
+                );
+            }
         }
 
 

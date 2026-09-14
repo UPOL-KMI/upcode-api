@@ -72,6 +72,8 @@ class InvitationHelper
      * @param string[] $groupsIds list of IDs where the user is added after registration
      * @param User $host who makes the invitation
      * @param string $locale language of the invitation email
+     * @param array $externalIds [ service => external identifier ] recorded on the account when
+     *              the invitation is accepted
      * @throws Exception
      */
     public function invite(
@@ -83,7 +85,8 @@ class InvitationHelper
         string $titlesAfter,
         array $groupsIds,
         User $host,
-        string $locale = "en"
+        string $locale = "en",
+        array $externalIds = []
     ) {
         $token = $this->accessManager->issueInvitationToken(
             $instanceId,
@@ -93,6 +96,8 @@ class InvitationHelper
             $titlesBefore,
             $titlesAfter,
             $groupsIds,
+            null,
+            $externalIds,
         );
 
         // yes, it is a bit odd to decode the token that was just created, but it is the easiest way how to implement

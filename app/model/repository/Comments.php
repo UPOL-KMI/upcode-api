@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Order;
 use App\Model\Entity\Comment;
 use App\Model\Entity\CommentThread;
 use App\Model\Entity\User;
+use DateTime;
 
 /**
  * @extends BaseRepository<Comment>
@@ -103,5 +104,33 @@ class Comments extends BaseRepository
                 ->orderBy(["postedAt" => Order::Descending])
                 ->setMaxResults(1)
         )->first();
+    }
+
+    /**
+     * Public comments posted in a thread at or after a given moment, oldest first.
+     *
+     * Written for the deferred comment notification (`CommentNotificationJobHandler`), which sends
+     * one e-mail for a burst rather than one per comment and therefore has to ask, minutes later,
+     * what actually arrived. Private comments are excluded here rather than by the caller because
+     * a comment can be *made* private in the meantime -- the notification then correctly forgets
+     * it, which the per-comment e-mail it replaces could not do.
+     * @param CommentThread $thread
+     * @param DateTime $since comments posted at or after this moment
+     * @return Comment[]
+     */
+    public function findPublicSince(CommentThread $thread, DateTime $since): array
+    {
+        return $this->comments->createQueryBuilder("c")
+            ->where("c.commentThread = :thread")
+            ->andWhere("c.isPrivate = 0")
+            ->andWhere("c.postedAt >= :since")
+            ->orderBy("c.postedAt", "ASC")
+            // `postedAt` is stored to the second, so a burst can tie -- measured on this
+            // deployment, where two comments written in the same second came back in the
+            // wrong order. The id breaks the tie so "the last one" is at least stable.
+            ->addOrderBy("c.id", "ASC")
+            ->setParameter("thread", $thread->getId())
+            ->setParameter("since", $since)
+            ->getQuery()->getResult();
     }
 }

@@ -56,7 +56,7 @@ class AssignmentCommentsEmailsSender
      * @return bool
      * @throws InvalidStateException
      */
-    public function assignmentComment(Assignment $assignment, Comment $comment): bool
+    public function assignmentComment(Assignment $assignment, Comment $comment, int $otherComments = 0): bool
     {
         if ($comment->isPrivate()) {
             // comment was private, therefore do not send email to others
@@ -87,8 +87,8 @@ class AssignmentCommentsEmailsSender
 
         return $this->localizationHelper->sendLocalizedEmail(
             $recipients,
-            function ($toUsers, $emails, $locale) use ($assignment, $comment) {
-                $result = $this->createAssignmentComment($assignment, $comment, $locale);
+            function ($toUsers, $emails, $locale) use ($assignment, $comment, $otherComments) {
+                $result = $this->createAssignmentComment($assignment, $comment, $locale, $otherComments);
 
                 // Send the mail
                 return $this->emailHelper->setShowSettingsInfo()->send(
@@ -114,7 +114,8 @@ class AssignmentCommentsEmailsSender
     private function createAssignmentComment(
         Assignment $assignment,
         Comment $comment,
-        string $locale
+        string $locale,
+        int $otherComments = 0
     ): EmailRenderResult {
         // render the HTML to string using Latte engine
         $latte = EmailLatteFactory::latte();
@@ -136,6 +137,7 @@ class AssignmentCommentsEmailsSender
                 "author" => $comment->getUser() ? $comment->getUser()->getName() : "",
                 "date" => $comment->getPostedAt(),
                 "comment" => $comment->getText(),
+                "otherComments" => $otherComments,
                 "link" => $this->webappLinks->getAssignmentPageUrl($assignment->getId())
             ]
         );

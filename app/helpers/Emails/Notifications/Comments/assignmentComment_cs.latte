@@ -6,3 +6,11 @@
     k zadané úloze '{$assignment}' ve skupině '{$group}'.
     Komentář je možné najít na stránce zadané úlohy: <a href="{$link}">{$link}</a>.
 </p>
+{if $otherComments > 0}
+<p>
+    {if $otherComments == 1}Do diskuse mezi tím přibyl další komentář.
+    {elseif $otherComments < 5}Do diskuse mezi tím přibyly {$otherComments} další komentáře.
+    {else}Do diskuse mezi tím přibylo {$otherComments} dalších komentářů.{/if}
+    Výše je ten poslední; ostatní najdete na stejné stránce.
+</p>
+{/if}

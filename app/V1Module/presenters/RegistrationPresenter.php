@@ -13,9 +13,11 @@ use App\Exceptions\WrongCredentialsException;
 use App\Exceptions\ForbiddenRequestException;
 use App\Exceptions\BadRequestException;
 use App\Exceptions\InvalidAccessTokenException;
+use App\Model\Entity\ExternalLogin;
 use App\Model\Entity\Login;
 use App\Model\Entity\User;
 use App\Model\Entity\Instance;
+use App\Model\Repository\ExternalLogins;
 use App\Model\Repository\Groups;
 use App\Model\Repository\Logins;
 use App\Model\Repository\Instances;
@@ -104,6 +106,12 @@ class RegistrationPresenter extends BasePresenter
      * @inject
      */
     public $invitationHelper;
+
+    /**
+     * @var ExternalLogins
+     * @inject
+     */
+    public $externalLogins;
 
     /**
      * Get an instance by its ID.
@@ -323,6 +331,29 @@ class RegistrationPresenter extends BasePresenter
             }
         }
 
+        // An identifier already held by somebody else cannot be recorded on acceptance, and an
+        // invitation is a one-way thing -- once the mail is out there is nowhere to report that
+        // half of it will be quietly dropped. So it is refused here, while there is still a caller
+        // listening, and the refusal names the identifier rather than merely the field.
+        $externalIds = [];
+        foreach ($format->externalIds ?? [] as $service => $externalId) {
+            $service = trim((string)$service);
+            $externalId = trim((string)$externalId);
+            if ($service === "" || $externalId === "") {
+                continue;
+            }
+
+            $owner = $this->externalLogins->getUser($service, $externalId);
+            if ($owner !== null) {
+                throw new InvalidApiArgumentException(
+                    'externalIds',
+                    "The '$service' identifier '$externalId' already belongs to another user "
+                    . "({$owner->getEmail()})."
+                );
+            }
+            $externalIds[$service] = $externalId;
+        }
+
         // create the token and send it via email
         try {
             $this->invitationHelper->invite(
@@ -335,6 +366,7 @@ class RegistrationPresenter extends BasePresenter
                 $groupsIds,
                 $this->getCurrentUser(),
                 $format->locale ?? "en",
+                $externalIds,
             );
         } catch (InvalidAccessTokenException $e) {
             throw new BadRequestException(
@@ -404,6 +436,29 @@ class RegistrationPresenter extends BasePresenter
             $this->users->persist($user);
         } else {
             $user = $login->getUser(); // user already exists
+        }
+
+        // Identifiers the inviter recorded (STAG numbers and the like). They were checked to be
+        // free when the invitation was issued, but that was some time ago, so a clash is possible
+        // and is *skipped rather than thrown*: the person accepting an invitation can do nothing
+        // about somebody else's identifier, and refusing here would leave them unable to get in
+        // at all. Whoever invited them can put it right afterwards, where there is a screen for it.
+        foreach ($token->getExternalIds() as $service => $externalId) {
+            $service = trim((string)$service);
+            $externalId = trim((string)$externalId);
+            if ($service === "" || $externalId === "") {
+                continue;
+            }
+
+            if ($this->externalLogins->getUser($service, $externalId) !== null) {
+                continue; // taken in the meantime, by this user or by another one
+            }
+
+            if ($this->externalLogins->findByUser($user, $service) !== null) {
+                continue; // this account already has an identifier for that service
+            }
+
+            $this->externalLogins->persist(new ExternalLogin($user, $service, $externalId), false);
         }
 
         // add into groups

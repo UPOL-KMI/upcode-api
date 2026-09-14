@@ -57,7 +57,7 @@ class SolutionCommentsEmailsSender
      * @return bool
      * @throws InvalidStateException
      */
-    private function sendSolutionComment($solution, Comment $comment): bool
+    private function sendSolutionComment($solution, Comment $comment, int $otherComments = 0): bool
     {
         if ($comment->isPrivate()) {
             // comment was private, therefore do not send email to others
@@ -99,11 +99,11 @@ class SolutionCommentsEmailsSender
 
         return $this->localizationHelper->sendLocalizedEmail(
             $filteredRecipients,
-            function ($toUsers, $emails, $locale) use ($solution, $comment) {
+            function ($toUsers, $emails, $locale) use ($solution, $comment, $otherComments) {
                 if ($solution instanceof AssignmentSolution) {
-                    $result = $this->createAssignmentSolutionComment($solution, $comment, $locale);
+                    $result = $this->createAssignmentSolutionComment($solution, $comment, $locale, $otherComments);
                 } else {
-                    $result = $this->createReferenceSolutionComment($solution, $comment, $locale);
+                    $result = $this->createReferenceSolutionComment($solution, $comment, $locale, $otherComments);
                 }
 
                 // Send the mail
@@ -126,14 +126,17 @@ class SolutionCommentsEmailsSender
      * @return boolean
      * @throws InvalidStateException
      */
-    public function assignmentSolutionComment(AssignmentSolution $solution, Comment $comment): bool
-    {
+    public function assignmentSolutionComment(
+        AssignmentSolution $solution,
+        Comment $comment,
+        int $otherComments = 0
+    ): bool {
         if ($solution->getAssignment() === null) {
             // assignment was deleted, do not send emails
             return false;
         }
 
-        return $this->sendSolutionComment($solution, $comment);
+        return $this->sendSolutionComment($solution, $comment, $otherComments);
     }
 
     /**
@@ -147,7 +150,8 @@ class SolutionCommentsEmailsSender
     private function createAssignmentSolutionComment(
         AssignmentSolution $solution,
         Comment $comment,
-        string $locale
+        string $locale,
+        int $otherComments = 0
     ): EmailRenderResult {
         // render the HTML to string using Latte engine
         $latte = EmailLatteFactory::latte();
@@ -167,6 +171,7 @@ class SolutionCommentsEmailsSender
                 "author" => $comment->getUser() ? $comment->getUser()->getName() : "",
                 "date" => $comment->getPostedAt(),
                 "comment" => $comment->getText(),
+                "otherComments" => $otherComments,
                 "link" => $this->webappLinks->getSolutionPageUrl(
                     $solution->getAssignment()->getId(),
                     $solution->getId()
@@ -182,14 +187,17 @@ class SolutionCommentsEmailsSender
      * @return bool
      * @throws InvalidStateException
      */
-    public function referenceSolutionComment(ReferenceExerciseSolution $solution, Comment $comment): bool
-    {
+    public function referenceSolutionComment(
+        ReferenceExerciseSolution $solution,
+        Comment $comment,
+        int $otherComments = 0
+    ): bool {
         if ($solution->getExercise() === null) {
             // exercise was deleted, do not send emails
             return false;
         }
 
-        return $this->sendSolutionComment($solution, $comment);
+        return $this->sendSolutionComment($solution, $comment, $otherComments);
     }
 
     /**
@@ -203,7 +211,8 @@ class SolutionCommentsEmailsSender
     private function createReferenceSolutionComment(
         ReferenceExerciseSolution $solution,
         Comment $comment,
-        string $locale
+        string $locale,
+        int $otherComments = 0
     ): EmailRenderResult {
         // render the HTML to string using Latte engine
         $latte = EmailLatteFactory::latte();
@@ -220,6 +229,7 @@ class SolutionCommentsEmailsSender
                 "author" => $comment->getUser() ? $comment->getUser()->getName() : "",
                 "date" => $comment->getPostedAt(),
                 "comment" => $comment->getText(),
+                "otherComments" => $otherComments,
                 "link" => $this->webappLinks->getReferenceSolutionPageUrl(
                     $solution->getExercise()->getId(),
                     $solution->getId()

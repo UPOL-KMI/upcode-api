@@ -217,6 +217,7 @@ class AccessManager
         string $titlesAfter = "",
         array $groupsIds = [],
         ?int $invitationExpiration = null,
+        array $externalIds = [],
     ): string {
         $token = InvitationToken::create(
             $invitationExpiration ?? $this->invitationExpiration,
@@ -227,6 +228,7 @@ class AccessManager
             $titlesBefore,
             $titlesAfter,
             $groupsIds,
+            $externalIds,
         );
         return $token->encode($this->verificationKey, $this->usedAlgorithm);
     }

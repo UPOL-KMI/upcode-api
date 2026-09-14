@@ -21,6 +21,8 @@ class InvitationToken
      * @param string $titlesBefore
      * @param string $titlesAfter
      * @param string[] $groupsIds list of IDs where the user is added after registration
+     * @param array $externalIds [ service => external identifier ] recorded on the account when
+     *              the invitation is accepted
      * @throws InvalidAccessTokenException if the data are not correct
      */
     public static function create(
@@ -31,7 +33,8 @@ class InvitationToken
         string $lastName,
         string $titlesBefore = "",
         string $titlesAfter = "",
-        array $groupsIds = []
+        array $groupsIds = [],
+        array $externalIds = []
     ) {
         return new self([
             "iid" => $instanceId,
@@ -40,6 +43,7 @@ class InvitationToken
             "exp" => time() + $expirationTime,
             "usr" => [$titlesBefore, $firstName, $lastName, $titlesAfter],
             "grp" => $groupsIds,
+            "xid" => (object)$externalIds,
         ]);
     }
 
@@ -127,6 +131,17 @@ class InvitationToken
     public function getGroupsIds(): array
     {
         return $this->payload["grp"] ?? [];
+    }
+
+    /**
+     * Identifiers this person holds in other systems, to be recorded on the account once the
+     * invitation is accepted. Absent from tokens issued before this was added, hence the default.
+     * @return array [ service => external identifier ]
+     */
+    public function getExternalIds(): array
+    {
+        $ids = $this->payload["xid"] ?? [];
+        return is_object($ids) ? (array)$ids : (array)$ids;
     }
 
     public function getIssuedAt(): int
