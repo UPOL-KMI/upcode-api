@@ -1,18 +1,18 @@
 {emailSubject}Oznámení k úloze - {$exercise}{/emailSubject}
-<h3>Oznámení k úloze - {$exercise}</h3>
+<h1>Oznámení k úloze '{$exercise}'</h1>
 
 {if $message}
 <p>
-    Uživatel {$user} (<a href="mailto:{$email}">{$email}</a>) nechal zaslat všem vyučujícím, kteří ve svých skupinách zadali úlohu '{$exercise}' následující oznámení:
+    Uživatel {$user} (<a href="mailto:{$email}">{$email}</a>) nechal zaslat všem vyučujícím,
+    kteří ve svých skupinách zadali úlohu '{$exercise}', následující oznámení:
 </p>
-<p><strong>{$message}</strong></p>
+<blockquote>{$message}</blockquote>
 {else}
 <p>
-    Uživatel {$user} (<a href="mailto:{$email}">{$email}</a>) nechal zaslat všem vyučujícím, kteří ve svých skupinách zadali úlohu '{$exercise}', oznámení o změně.
+    Uživatel {$user} (<a href="mailto:{$email}">{$email}</a>) nechal zaslat všem vyučujícím,
+    kteří ve svých skupinách zadali úlohu '{$exercise}', oznámení o změně.
     Oznámení neobsahuje žádné další upřesnění.
 </p>
 {/if}
 
-<p>
-    Detail ůlohy má adresu <a href="{$link}">{$link}</a>.
-</p>
+{button($link, 'Otevřít úlohu')|noescape}

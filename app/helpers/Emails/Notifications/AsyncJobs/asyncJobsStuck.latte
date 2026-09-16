@@ -1,8 +1,18 @@
 {emailSubject}Async Jobs Stuck{/emailSubject}
-<p>
-  Some async jobs may be stalled! Verify the asynchronous worker (the recodex-core) service is running. It is also possible the worker is overwhellmed and does not process jobs fast enough.
-</p>
+<h1>Some async jobs may be stalled</h1>
 
 <p>
-  Total {$count} jobs are indicated as overdue and maximal delay is {$maxDelay|relativeDateTime:'en'}.
+    Verify the asynchronous worker (the recodex-core) service is running. It is also possible the
+    worker is overwhelmed and does not process jobs fast enough.
 </p>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Overdue jobs</td>
+        <td class="v">{$count}</td>
+    </tr>
+    <tr>
+        <td class="k">Maximal delay</td>
+        <td class="v">{$maxDelay|relativeDateTime:'en'}</td>
+    </tr>
+</table>

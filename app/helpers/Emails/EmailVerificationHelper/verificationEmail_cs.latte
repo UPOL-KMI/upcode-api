@@ -1,20 +1,25 @@
 {emailSubject}Ověření emailové adresy - {$email}{/emailSubject}
 {if $firstTime}
-<h3>Vítejte v aplikaci {$siteName}</h3>
-<p>
-  Váš účet asociovaný s adresou {$email} byl úspěšně vytvořen.
-</p>
+<h1>Vítejte v aplikaci {$siteName}</h1>
+<p>Váš účet asociovaný s adresou <strong>{$email}</strong> byl úspěšně vytvořen.</p>
 {else}
-<h3>Ověření emailové adresy {$email}</h3>
+<h1>Ověření emailové adresy {$email}</h1>
 {/if}
+
 <p>
     Aplikace {$siteName} by ráda ověřila vaši e-mailovou adresu.
     Ověření adresy je nezbytné pro správné fungování všech jejích služeb.
-    Platnost adresy můžete potvrdit kliknutím na následující odkaz: <a href="{$link}">{$link}</a>.
-    Tento odkaz bude platný do {$expiresAfter}.
+</p>
+
+{button($link, 'Potvrdit adresu')|noescape}
+
+<p>
+    Tento odkaz bude platný do <strong>{$expiresAfter}</strong>.
     Nový odkaz vám může být zaslán, pokud o ověření e-mailu požádáte v aplikaci {$siteName} znovu.
 </p>
-<hr>
-<p>
+
+{linkFallback($link, 'Pokud tlačítko nefunguje, otevřete tuto adresu:')|noescape}
+
+<p class="quiet">
     Všechna vaše data, včetně emailové adresy, jsou uchována v souladu s GDPR.
 </p>

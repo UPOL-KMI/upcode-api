@@ -1,8 +1,22 @@
 {emailSubject}Nová stínová úloha - {$name}{/emailSubject}
-<h3>Byla zadána nová stínová úloha '{$name}'</h3>
+<h1>Byla zadána nová stínová úloha '{$name}'</h1>
+
 <p>
-    Ve vaší skupině '{$group}' byla zadána nová stínová úloha '{$name}'{if $maxPoints}, ze
-    které můžete získat maximálně {$maxPoints} bodů{/if}.
+    Ve vaší skupině '{$group}' byla zadána nová stínová úloha '{$name}'.
     Stínové úlohy slouží pouze k evidenci bodů za činnosti, které probíhají mimo aplikaci {$siteName}.
-    Úlohu je možné najít na adrese: <a href="{$link}">{$link}</a>.
 </p>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Skupina</td>
+        <td class="v">{$group}</td>
+    </tr>
+    {if $maxPoints}
+    <tr>
+        <td class="k">Maximální počet bodů</td>
+        <td class="v">{$maxPoints}</td>
+    </tr>
+    {/if}
+</table>
+
+{button($link, 'Otevřít úlohu')|noescape}

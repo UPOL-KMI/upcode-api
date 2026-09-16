@@ -1,12 +1,15 @@
 {emailSubject}New Submission After Review - {$assignment}{/emailSubject}
-<h3>New Submission After Review - {$assignment}</h3>
+<h1>New submission after review — '{$assignment}'</h1>
+
 <p>
-  User <strong>{$user}</strong> has submitted a new solution of the assignment <strong>'{$assignment}'</strong>
-  which was evaluated as <strong>{$score}%</strong> correct.
-  Another solution of this user has been already marked as <strong>reviewed</strong>
-   and at the same time none of the solutions is marked as <strong>accepted</strong>.
-  This may mean that the user is submitting a corrected solution which may be worth your attention.
+    User <strong>{$user}</strong> has submitted a new solution of the assignment
+    <strong>'{$assignment}'</strong> which was evaluated as <strong>{$score}%</strong> correct.
 </p>
+
 <p>
-  The submission can be found here: <a href="{$link}">{$link}</a>.
+    Another solution of this user has been already marked as <strong>reviewed</strong>
+    and at the same time none of the solutions is marked as <strong>accepted</strong>.
+    This may mean that the user is submitting a corrected solution which may be worth your attention.
 </p>
+
+{button($link, 'Open the submission')|noescape}

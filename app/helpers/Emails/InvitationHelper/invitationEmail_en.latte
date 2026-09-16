@@ -1,9 +1,22 @@
 {emailSubject}User {$host} has invited you to {$siteName}!{/emailSubject}
-<h3>{$siteName} Invitation</h3>
-<p>
-    You have been given an invitation to {$siteName} issued at name {$username}. The following link will allow you to proceed with registration: <a href="{$link}">{$link}</a>
-</p>
+<h1>{$siteName} Invitation</h1>
 
 <p>
-    The invitation was created by <a href="mailto:{$hostmail}">{$host}</a> and it will expire at {$expireAt|localizedDate:'en'}.
+    You have been given an invitation to {$siteName} issued at name <strong>{$username}</strong>.
+    The following link will allow you to proceed with registration.
 </p>
+
+{button($link, 'Continue to registration')|noescape}
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Invited by</td>
+        <td class="v"><a href="mailto:{$hostmail}">{$host}</a></td>
+    </tr>
+    <tr>
+        <td class="k">Expires at</td>
+        <td class="v">{$expireAt|localizedDate:'en'}</td>
+    </tr>
+</table>
+
+{linkFallback($link, 'If the button does not work, open this address:')|noescape}

@@ -1,17 +1,36 @@
 {emailSubject}Submission Evaluated - {$assignment}{/emailSubject}
-<h3>Your submission of the assignment '{$assignment}' was evaluated</h3>
-<p>
-    Your submission of the assignment '{$assignment}' submitted on {$date|localizedDate:'en'}
-    in the group '{$group}' was evaluated{if $isResubmit} again{/if}.
-    {if $isResubmit}The re-evaluation was initiated by {$submittedBy}.{/if}
-    The solution has status {$status} and was awarded {$points} of {$maxPoints} points.
-</p>
-<p>
+<h1>Your submission of the assignment '{$assignment}' was evaluated{if $isResubmit} again{/if}</h1>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Group</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Submitted on</td>
+        <td class="v">{$date|localizedDate:'en'}</td>
+    </tr>
+    <tr>
+        <td class="k">Status</td>
+        <td class="v">{$status}</td>
+    </tr>
+    <tr>
+        <td class="k">Points</td>
+        <td class="v">{$points} of {$maxPoints}</td>
+    </tr>
+    {if $isResubmit}
+    <tr>
+        <td class="k">Re-evaluation initiated by</td>
+        <td class="v">{$submittedBy}</td>
+    </tr>
+    {/if}
+</table>
+
+{button($link, 'See the results')|noescape}
+
+<p class="quiet">
     These notifications are sent only when the evaluation takes a longer amount of time
     or a solution was resubmitted for evaluation.
     A resubmission can be initiated by a teacher or by an administrator
     (e.g., when the exercise configuration has changed or a bug in the system has been fixed).
-</p>
-<p>
-    You may see the results at: <a href="{$link}">{$link}</a>.
 </p>

@@ -1,39 +1,39 @@
 {emailSubject}General Status Overview{/emailSubject}
-<p>
-  Gathered general statistics for last period ({$period}).
-</p>
+<h1>General status overview</h1>
 
-<table>
-  <tr>
-    <td>Users:</td>
-    <td>{$totalUsers} ({$createdUsers} new{if $inactiveUsers}, {$inactiveUsers} inactive{/if})<td>
-  </tr>
-  <tr>
-    <td>Groups:</td>
-    <td>{$totalGroups} ({$archivedGroups} archived)<td>
-  </tr>
-  <tr>
-    <td>Exercises:</td>
-    <td>{$totalExercises} ({$createdExercises} new)<td>
-  </tr>
-  <tr>
-    <td>Assignments:</td>
-    <td>{$totalAssignments} ({$createdAssignments} new)<td>
-  </tr>
-  <tr>
-    <td>Solutions:</td>
-    <td>{$totalSolutions} ({$createdSolutions} new)<td>
-  </tr>
-  <tr>
-    <td>New Evaluations:</td>
-    <td>{$createdSubmissions}<td>
-  </tr>
-  <tr>
-    <td>Failed Evaluations:</td>
-    <td>{$failedSubmissions}<td>
-  </tr>
-  <tr>
-    <td>Total Evaluations:</td>
-    <td>{$totalEvaluations}<td>
-  </tr>
+<p>Gathered general statistics for last period ({$period}).</p>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Users</td>
+        <td class="v">{$totalUsers} <span class="quiet">({$createdUsers} new{if $inactiveUsers}, {$inactiveUsers} inactive{/if})</span></td>
+    </tr>
+    <tr>
+        <td class="k">Groups</td>
+        <td class="v">{$totalGroups} <span class="quiet">({$archivedGroups} archived)</span></td>
+    </tr>
+    <tr>
+        <td class="k">Exercises</td>
+        <td class="v">{$totalExercises} <span class="quiet">({$createdExercises} new)</span></td>
+    </tr>
+    <tr>
+        <td class="k">Assignments</td>
+        <td class="v">{$totalAssignments} <span class="quiet">({$createdAssignments} new)</span></td>
+    </tr>
+    <tr>
+        <td class="k">Solutions</td>
+        <td class="v">{$totalSolutions} <span class="quiet">({$createdSolutions} new)</span></td>
+    </tr>
+    <tr>
+        <td class="k">New evaluations</td>
+        <td class="v">{$createdSubmissions}</td>
+    </tr>
+    <tr>
+        <td class="k">Failed evaluations</td>
+        <td class="v">{$failedSubmissions}</td>
+    </tr>
+    <tr>
+        <td class="k">Total evaluations</td>
+        <td class="v">{$totalEvaluations}</td>
+    </tr>
 </table>

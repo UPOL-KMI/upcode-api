@@ -1,9 +1,27 @@
 {emailSubject}Nová úloha - '{$assignment}'{/emailSubject}
-<h3>Byla zadána nová úloha '{$assignment}'</h3>
-<p>
-    Ve vaší skupině '{$group}' byla zadána nová úloha '{$assignment}'.
-    Termín odevzdání je {$firstDeadline|localizedDate:'cs'}
-    {if $allowSecondDeadline} (druhý termín je {$secondDeadline|localizedDate:'en'}){/if}
-    a na odevzdání máte {$attempts} pokusů. Maximální počet bodů je {$points}.
-    Úlohu je možné najít na adrese: <a href="{$link}">{$link}</a>.
-</p>
+<h1>Byla zadána nová úloha '{$assignment}'</h1>
+
+<p>Ve vaší skupině '{$group}' byla zadána nová úloha '{$assignment}'.</p>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Termín odevzdání</td>
+        <td class="v">{$firstDeadline|localizedDate:'cs'}</td>
+    </tr>
+    {if $allowSecondDeadline}
+    <tr>
+        <td class="k">Druhý termín</td>
+        <td class="v">{$secondDeadline|localizedDate:'cs'}</td>
+    </tr>
+    {/if}
+    <tr>
+        <td class="k">Počet pokusů</td>
+        <td class="v">{$attempts}</td>
+    </tr>
+    <tr>
+        <td class="k">Maximální počet bodů</td>
+        <td class="v">{$points}</td>
+    </tr>
+</table>
+
+{button($link, 'Otevřít úlohu')|noescape}

@@ -1,14 +1,17 @@
 {emailSubject}Nedokončené revize kódu{/emailSubject}
-
-<h3>Některé revize kódu ve vašich skupinách čekají na uzavření!</h3>
+<h1>Některé revize kódu ve vašich skupinách čekají na uzavření!</h1>
 
 <p>
-    Následující studentská řešení mají rozpracované revize kódu. Mějte na paměti, že autoři řešení nevidí komentáře z revizí dokud tyto revize nejsou uzavřeny.
+    Následující studentská řešení mají rozpracované revize kódu. Mějte na paměti, že autoři řešení
+    nevidí komentáře z revizí dokud tyto revize nejsou uzavřeny.
 </p>
 
-<ul>
-    <li n:foreach="$solutions as $solution">
-        <a href="{$solution->solutionUrl}">řešení #{$solution->attempt}</a> (odevzdané {$solution->submitted|localizedDate:'cs'})
-        k <a href="{$solution->assignmentUrl}">úloze <em>{$solution->assignment}</em></a> ve skupině <em>{$solution->group}</em>
-    </li>
-</ul>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr n:foreach="$solutions as $solution">
+        <td class="k"><a href="{$solution->solutionUrl}">řešení #{$solution->attempt}</a></td>
+        <td class="v">
+            <a href="{$solution->assignmentUrl}">{$solution->assignment}</a><br>
+            <span class="quiet">{$solution->group} · odevzdáno {$solution->submitted|localizedDate:'cs'}</span>
+        </td>
+    </tr>
+</table>
