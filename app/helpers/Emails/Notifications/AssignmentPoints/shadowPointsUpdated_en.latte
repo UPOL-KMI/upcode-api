@@ -1,12 +1,17 @@
 {emailSubject}Shadow Assignment Points Awarded - {$assignment}{/emailSubject}
 <h1>Updated points of shadow assignment '{$assignment}'</h1>
 
-<p>
-    The number of points awarded for the shadow assignment '{$assignment}'
-    in the group '{$group}' has been modified.
-</p>
+<p>The number of points awarded for the shadow assignment has been modified.</p>
 
 <table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Group</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Assignment</td>
+        <td class="v">{$assignment}</td>
+    </tr>
     <tr>
         <td class="k">Points</td>
         <td class="v">{$points}{if $maxPoints} out of {$maxPoints}{/if}</td>

@@ -2,14 +2,18 @@
 <h1>Byla zadána nová stínová úloha '{$name}'</h1>
 
 <p>
-    Ve vaší skupině '{$group}' byla zadána nová stínová úloha '{$name}'.
-    Stínové úlohy slouží pouze k evidenci bodů za činnosti, které probíhají mimo aplikaci {$siteName}.
+    Stínové úlohy slouží k poskytování výukových materiálů nebo k evidenci bodů za úkoly,
+    které jsou odevzdávány mimo aplikaci {$siteName}.
 </p>
 
 <table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr>
         <td class="k">Skupina</td>
         <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Název úlohy</td>
+        <td class="v">{$name}</td>
     </tr>
     {if $maxPoints}
     <tr>

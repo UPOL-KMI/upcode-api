@@ -1,9 +1,17 @@
 {emailSubject}Hodnocení úlohy změněno - {$assignment}{/emailSubject}
 <h1>Změna hodnocení úlohy '{$assignment}'</h1>
 
-<p>Vaše bodové hodnocení úlohy '{$assignment}' ve skupině '{$group}' bylo změněno.</p>
+<p>Vaše bodové hodnocení úlohy bylo změněno.</p>
 
 <table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Skupina</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Název úlohy</td>
+        <td class="v">{$assignment}</td>
+    </tr>
     <tr>
         <td class="k">Body</td>
         <td class="v">{$points} z {$maxPoints}</td>

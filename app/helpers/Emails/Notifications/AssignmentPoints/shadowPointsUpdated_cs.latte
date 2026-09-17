@@ -1,11 +1,17 @@
 {emailSubject}Hodnocení stínové úlohy změněno - {$assignment}{/emailSubject}
 <h1>Změna hodnocení stínové úlohy '{$assignment}'</h1>
 
-<p>
-    Počet bodů přidělených za stínovou úlohu '{$assignment}' ve skupině '{$group}' byl změněn.
-</p>
+<p>Počet bodů přidělených za stínovou úlohu byl změněn.</p>
 
 <table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Skupina</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Název úlohy</td>
+        <td class="v">{$assignment}</td>
+    </tr>
     <tr>
         <td class="k">Body</td>
         <td class="v">{$points}{if $maxPoints} z {$maxPoints}{/if}</td>

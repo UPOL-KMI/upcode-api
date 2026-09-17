@@ -7,11 +7,11 @@
 </p>
 
 <table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr n:foreach="$solutions as $solution">
-        <td class="k"><a href="{$solution->solutionUrl}">řešení #{$solution->attempt}</a></td>
+    <tr n:foreach="$solutions as $pending">
+        <td class="k"><a href="{$pending->solutionUrl}">řešení #{$pending->attempt}</a></td>
         <td class="v">
-            <a href="{$solution->assignmentUrl}">{$solution->assignment}</a><br>
-            <span class="quiet">{$solution->group} · odevzdáno {$solution->submitted|localizedDate:'cs'}</span>
+            <a href="{$pending->assignmentUrl}">{$pending->assignment}</a><br>
+            <span class="quiet">{$pending->group} · odevzdáno {$pending->submitted|localizedDate:'cs'}</span>
         </td>
     </tr>
 </table>
