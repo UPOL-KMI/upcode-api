@@ -1,16 +1,40 @@
 {emailSubject}Řešení vyhodnoceno - {$assignment}{/emailSubject}
-<h3>Vaše řešení úlohy '{$assignment}' bylo vyhodnoceno</h3>
-<p>
-    Vaše řešení k úloze '{$assignment}' odevzdané v {$date|localizedDate:'cs'} ve skupině '{$group}' bylo {if $isResubmit}znovu {/if}vyhodnoceno.
-    {if $isResubmit}Opětovné vyhodnocení bylo iniciováno uživatelem {$submittedBy}.{/if}
-    Řešení má status {$status} a získalo {$points} bodů z {$maxPoints}.
-</p>
-<p>
+<h1>Vaše řešení úlohy '{$assignment}' bylo {if $isResubmit}znovu {/if}vyhodnoceno</h1>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Skupina</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Název úlohy</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">Odevzdáno</td>
+        <td class="v">{$date|localizedDate:'cs'}</td>
+    </tr>
+    <tr>
+        <td class="k">Status</td>
+        <td class="v">{$status}</td>
+    </tr>
+    <tr>
+        <td class="k">Body</td>
+        <td class="v">{$points} z {$maxPoints}</td>
+    </tr>
+    {if $isResubmit}
+    <tr>
+        <td class="k">Znovu vyhodnotil</td>
+        <td class="v">{$submittedBy}</td>
+    </tr>
+    {/if}
+</table>
+
+{button($link, 'Zobrazit výsledky')|noescape}
+
+<p class="quiet">
     Tyto notifikace jsou zasílány pouze pokud vyhodnocení trvá delší dobu,
     nebo pokud dojde k opětovnému vyhodnocení odevzdaného řešení.
     O opětovné vyhodnocení může požádat vyučující nebo administrátor,
     např. pokud dojde ke změně nastavení úlohy, nebo opravě chyby v systému.
-</p>
-<p>
-    Výsledky si můžete prohlédnout na adrese: <a href="{$link}">{$link}</a>.
 </p>

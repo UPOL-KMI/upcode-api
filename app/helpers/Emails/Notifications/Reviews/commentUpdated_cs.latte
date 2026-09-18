@@ -1,33 +1,42 @@
 {emailSubject}Změna komentáře u revize řešení{/emailSubject}
+<h1>{$comment->isIssue() ? 'Připomínka k vyřešení byla změněna' : 'Komentář u revize řešení byl změněn'}!</h1>
 
-<h3>{$comment->isIssue() ? 'Připomínka k vyřešení byla změněna' : 'Komentář u revize řešení byl změměn'}!</h3>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Skupina</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Název úlohy</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">Řešení</td>
+        <td class="v">#{$attempt}, odevzdáno {$submitted|localizedDate:'cs'}</td>
+    </tr>
+    <tr>
+        <td class="k">Revize dokončena</td>
+        <td class="v">{$closed|localizedDate:'cs'}</td>
+    </tr>
+</table>
 
-<p>
-    U revize vašeho řešení <strong>#{$attempt}</strong> (odevzdaného <strong>{$submitted|localizedDate:'cs'}</strong>)
-    úlohy <strong>{$assignment}</strong> ze skupiny <strong>{$group}</strong>,
-    kterou vyučující dokončil <strong>{$closed|localizedDate:'cs'}</strong>,
-    <strong>{$comment->isIssue() ? 'byla upravena připomínka k vyřešení' : 'byl upraven komentář'}</strong>.
-</p>
-
-<h5 n:if="$comment->getFile()">Aktualizováno u <code>{$comment->getFile()}:{$comment->getLine()}</code></h5>
-<h5 n:if="!$comment->getFile()">Aktualizováno shrnutí revize</h5>
+<h2 n:if="$comment->getFile()">Aktualizováno u <code>{$comment->getFile()}:{$comment->getLine()}</code></h2>
+<h2 n:if="!$comment->getFile()">Aktualizováno shrnutí revize</h2>
 
 {if $oldText !== $comment->getText()}
-<h6>Předchozí verze</h6>
-{$oldText|markdown|noescape}
+<h3>Předchozí verze</h3>
+<blockquote>{$oldText|markdown|noescape}</blockquote>
 
-<h6>Nová verze:</h6>
+<h3>Nová verze</h3>
 {/if}
 
-{$comment->getText()|markdown|noescape}
+<blockquote>{$comment->getText()|markdown|noescape}</blockquote>
 
 <p n:if="$issueChanged">
-    Typ komentáře byl změměn z
+    Typ komentáře byl změněn z
     <strong>{$comment->isIssue() ? 'běžného komentáře' : 'připomínky k vyřešení'}</strong>
     na
     <strong>{$comment->isIssue() ? 'připomínku k vyřešení' : 'běžný komentář'}</strong>.
 </p>
 
-<p>
-    Kompletní revizi kódu naleznete zde: <a href="{$codeUrl}">{$codeUrl}</a>
-</p>
+{button($codeUrl, 'Zobrazit celou revizi')|noescape}

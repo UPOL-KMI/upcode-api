@@ -1,14 +1,17 @@
 {emailSubject}Incomplete reviews{/emailSubject}
-
-<h3>Some of the code reviews in your groups have not yet been closed!</h3>
+<h1>Some of the code reviews in your groups have not yet been closed!</h1>
 
 <p>
-    The following solutions have opened reviews. Please note that a solution author will not see the review comments until the review is closed.
+    The following solutions have opened reviews. Please note that a solution author will not see
+    the review comments until the review is closed.
 </p>
 
-<ul>
-    <li n:foreach="$solutions as $solution">
-        <a href="{$solution->solutionUrl}">solution #{$solution->attempt}</a> (submitted at {$solution->submitted|localizedDate:'en'})
-        of the <a href="{$solution->assignmentUrl}">assignment <em>{$solution->assignment}</em></a> in the group <em>{$solution->group}</em>
-    </li>
-</ul>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr n:foreach="$solutions as $pending">
+        <td class="k"><a href="{$pending->solutionUrl}">solution #{$pending->attempt}</a></td>
+        <td class="v">
+            <a href="{$pending->assignmentUrl}">{$pending->assignment}</a><br>
+            <span class="quiet">{$pending->group} · submitted at {$pending->submitted|localizedDate:'en'}</span>
+        </td>
+    </tr>
+</table>

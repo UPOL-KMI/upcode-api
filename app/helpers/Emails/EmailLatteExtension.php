@@ -12,6 +12,11 @@ use Generator;
 /**
  * Extension class that is registered into latte to handle email subjects.
  * (introduces {emailSubject} tag which captures the subject of rendered email templates)
+ *
+ * The captured subject is **not** echoed back into the body. It used to be, which meant every
+ * message opened with its own subject as a bare line of text, directly above the heading that
+ * said the same thing again -- and below the subject line the mail client had already shown.
+ * The subject is returned to the caller through setSubject(); the body has no use for it.
  */
 class EmailLatteExtension extends Latte\Extension
 {
@@ -68,7 +73,6 @@ class EmailLatteExtension extends Latte\Extension
                         } finally {
                             $ʟ_recodex_email_subject = ob_get_clean();
                             \App\Helpers\Emails\EmailLatteExtension::setSubject($ʟ_recodex_email_subject);
-                            echo $ʟ_recodex_email_subject;
                         }
                         CODE,
                     $content,

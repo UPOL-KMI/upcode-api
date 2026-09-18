@@ -1,76 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
     <title>{$subject}</title>
     <style>
-        a {
-            font-weight: bold;
-            color: #595959;
-            border-bottom: 1px solid #cfcfcf;
-            text-decoration: none;
+        /* Typography for the message body, which each template writes as plain h1/p/ul/table.
+           Inline styles carry everything a client must not lose (see the note in EmailHelper.php);
+           this only has to make a read pleasant where it is honoured. */
+        .content h1 { margin:0 0 16px; font-size:21px; line-height:1.3; font-weight:600; color:#14181c; }
+        .content h2 { margin:28px 0 10px; font-size:17px; line-height:1.35; font-weight:600; color:#14181c; }
+        .content h3, .content h4, .content h5 { margin:24px 0 8px; font-size:15px; line-height:1.4; font-weight:600; color:#14181c; }
+        .content p { margin:0 0 14px; }
+        .content p:last-child { margin-bottom:0; }
+        .content ul, .content ol { margin:0 0 14px; padding-left:22px; }
+        .content li { margin:0 0 6px; }
+        .content a { color:#016BAB; text-decoration:underline; }
+        .content strong { font-weight:600; color:#14181c; }
+        .content code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px;
+                        background:#f2f5f7; border:1px solid #e3e8ec; border-radius:4px; padding:1px 5px; }
+        .content pre { margin:0 0 14px; padding:12px 14px; overflow-x:auto;
+                       background:#f2f5f7; border:1px solid #e3e8ec; border-radius:8px; }
+        .content pre code { background:none; border:none; padding:0; }
+        .content blockquote { margin:0 0 14px; padding:2px 0 2px 14px; border-left:3px solid #d7dfe5; color:#5b6670; }
+        .content .quiet { color:#5b6670; font-size:14px; }
+
+        /* The facts a notification is actually about -- deadline, points, attempts -- as label and
+           value rather than buried in a sentence. */
+        .facts td { padding:7px 0; border-bottom:1px solid #edf1f4;
+                    font-size:15px; line-height:1.5; vertical-align:top; }
+        .facts tr:last-child td { border-bottom:none; }
+        .facts .k { color:#5b6670; padding-right:20px; white-space:nowrap; }
+        .facts .v { color:#14181c; font-weight:500; }
+
+        @media (max-width:600px) {
+            .pad { padding-left:20px !important; padding-right:20px !important; }
+            .content h1 { font-size:19px !important; }
+            .btn a { display:block !important; text-align:center !important; }
         }
 
-        hr {
-            color: #cbd9dc;
-            background-color: #cbd9dc;
-        }
-
-        p {
-            color: #000;
+        @media (prefers-color-scheme: dark) {
+            .logo-light { display:none !important; }
+            .logo-dark { display:block !important; }
+            .page { background:#0f1417 !important; }
+            .card { background:#161c21 !important; border-color:#2a343c !important; }
+            .content { color:#e8edf1 !important; }
+            .content h1, .content h2, .content h3, .content h4, .content h5,
+            .content strong, .ink { color:#f2f6f9 !important; }
+            .content a, .link { color:#6fb9e8 !important; }
+            .content code, .content pre { background:#1d252b !important; border-color:#2a343c !important; color:#e8edf1 !important; }
+            .content blockquote { border-left-color:#3a464f !important; color:#9aa7b2 !important; }
+            .content .quiet, .facts .k, .footer, .muted { color:#9aa7b2 !important; }
+            .facts .v { color:#f2f6f9 !important; }
+            .facts td { border-bottom-color:#232c33 !important; }
+            .footer { background:#12181d !important; border-top-color:#2a343c !important; }
+            .hairline { border-top-color:#2a343c !important; }
         }
     </style>
 </head>
-<body style="margin: 0;">
-<div style="padding: 30px 0; font-family: Arial, sans-serif; font-size: 10pt;">
-    <table style="margin: 0 auto;" align="center">
-        <tr>
-            <td style="padding: 0 !important;">
-                <table style="width: 600px; margin: 0 auto; background: #fff; border: 1px solid #cbd9dc;" align="center"
-                       cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td style="background: #006FAD; color: #ecf0f5; font-weight: bold; padding: 20px;">
-                            <h2 style="margin: 0;">{$subject}</h2>
-                        </td>
-                        <td style="background: #006FAD; margin: 0; padding: 10px 20px 10px 0;text-align: right;">
-                            <img style="width: 50px; border: none;" src="{$apiUrl|trim:"/"}/emails/img/logo_only.png"
-                                 alt="UPolníček">
-                        </td>
-                    </tr>
+<body style="margin:0;padding:0;background:#eef2f5;-webkit-font-smoothing:antialiased;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;font-size:1px;line-height:1px;">{$subject}</div>
 
-                    <tr>
-                        <td style="padding: 20px;" colspan="2">
-                            <div style="word-wrap: break-word; width: 580px;">
-                                {$message|noescape}
-                            </div>
-                            {if $showSettingsInfo}
-                            <hr>
-                            <p>
-                                If you do not wish to receive this type of notification, please update your user
-                                settings accordingly.
-                            </p>
-                            {/if}
-                        </td>
-                    </tr>
-                    <tr style="background: #f8f8f8; margin: 0; padding: 0; text-align: left; overflow: hidden;">
-                        <td style="margin: 0; padding: 20px;">
-                            <p style="margin: 0; padding: 0;">
-                                UPolníček<br>Department of Computer Science, Faculty of Science, UP Olomouc<br>
-                                <a href="{$footerUrl}">{$footerUrl}</a>
-                            </p>
-                        </td>
-                        <td style="margin: 0; padding: 20px; text-align: right;">
-                            <a href="{$githubUrl}" style="width: 30px; height: 30px; padding-left: 10px; border: none;"
-                               target=_blank>
-                                <img style="border: none;" src="{$apiUrl|trim:"/"}/emails/img/github.png" width="30"
-                                     height="30" alt="Github">
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</div>
+<table role="presentation" class="page" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#eef2f5;">
+    <tr>
+        <td align="center" style="padding:32px 12px;">
+
+            <table role="presentation" class="card" width="600" cellpadding="0" cellspacing="0" border="0" align="center"
+                   style="width:600px;max-width:100%;background:#ffffff;border:1px solid #e3e8ec;border-radius:14px;overflow:hidden;">
+
+                <tr>
+                    <td class="pad" style="padding:24px 32px 20px;">
+                        {* The whole lockup as one image -- the mark, the product's name and the
+                           department's -- generated from the frontend's own brand component by
+                           `tools/brand-email-logo.mjs` in the deployment repository, so the header
+                           of a message cannot drift away from the header of the application.
+                           Written at twice this size, which is what keeps it sharp on a phone.
+                           `alt` carries the same words, because most mail clients block remote
+                           images until the reader asks for them and a blocked logo must still
+                           say whose message this is. *}
+                        {* **Two files, swapped by the scheme.** On the site the mark's letters are
+                           `currentColor` and its dot and diagonal are the brand colour, so it
+                           follows the theme by itself; a PNG cannot, so there is one per scheme and
+                           the block above switches them. Both are transparent -- the single
+                           white-backed file used before put a bright rectangle in the middle of a
+                           dark message. Generated by `tools/brand-email-logo.mjs` in the deployment
+                           repository from the frontend's own brand component, so the header of a
+                           message cannot drift from the header of the application.
+
+                           A client that ignores `prefers-color-scheme` -- Gmail, mostly -- keeps
+                           the light file, which is what it has always shown. `alt` carries the
+                           words on both, because most clients block remote images until asked. *}
+                        <img src="{$apiUrl|trim:"/"}/emails/img/upolnicek.png" width="195" height="44"
+                             alt="UPolníček — Department of Computer Science" class="logo-light"
+                             style="display:block;width:195px;height:44px;border:0;">
+                        <img src="{$apiUrl|trim:"/"}/emails/img/upolnicek-dark.png" width="195" height="44"
+                             alt="UPolníček — Department of Computer Science" class="logo-dark"
+                             style="display:none;width:195px;height:44px;border:0;">
+                    </td>
+                </tr>
+                <tr><td style="padding:0;"><div style="height:3px;background:#016BAB;line-height:3px;font-size:3px;">&nbsp;</div></td></tr>
+
+                <tr>
+                    <td class="content pad" style="padding:28px 32px 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:1.65;color:#14181c;word-wrap:break-word;">
+                        {$message|noescape}
+                    </td>
+                </tr>
+
+                {if $showSettingsInfo}
+                <tr>
+                    <td class="pad" style="padding:0 32px 28px;">
+                        <div class="hairline" style="border-top:1px solid #e3e8ec;padding-top:16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.6;color:#5b6670;">
+                            If you do not wish to receive this type of notification, please update your user settings accordingly.
+                        </div>
+                    </td>
+                </tr>
+                {/if}
+
+                <tr>
+                    <td class="footer pad" style="background:#f6f8fa;border-top:1px solid #e3e8ec;padding:20px 32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.7;color:#5b6670;">
+                        <span class="ink" style="color:#14181c;font-weight:600;">UPolníček</span> · Department of Computer Science, Faculty of Science, UP Olomouc<br>
+                        <a href="{$footerUrl}" class="link" style="color:#016BAB;text-decoration:none;">{$footerUrl}</a>
+                        &nbsp;·&nbsp;
+                        <a href="{$githubUrl}" class="link" style="color:#016BAB;text-decoration:none;">GitHub</a>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
 </body>
 </html>

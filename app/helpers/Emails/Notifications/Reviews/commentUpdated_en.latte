@@ -1,25 +1,36 @@
 {emailSubject}Review comment updated{/emailSubject}
+<h1>{$comment->isIssue() ? 'An issue' : 'A comment'} in a solution review was modified!</h1>
 
-<h3>{$comment->isIssue() ? 'An issue' : 'A comment'} in a solution review was modified!</h3>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Group</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Assignment</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">Solution</td>
+        <td class="v">#{$attempt}, submitted at {$submitted|localizedDate:'en'}</td>
+    </tr>
+    <tr>
+        <td class="k">Review closed</td>
+        <td class="v">{$closed|localizedDate:'en'}</td>
+    </tr>
+</table>
 
-<p>
-    <strong>{$comment->isIssue() ? 'An issue' : 'A comment'} was modified</strong> in the review of solution
-    <strong>#{$attempt}</strong> (submitted at <strong>{$submitted|localizedDate:'en'}</strong>)
-    of the assignment <strong>{$assignment}</strong> in the group <strong>{$group}</strong>
-    that was closed by the teacher at <strong>{$closed|localizedDate:'en'}</strong>.
-</p>
-
-<h5 n:if="$comment->getFile()">Updated at <code>{$comment->getFile()}:{$comment->getLine()}</code></h5>
-<h5 n:if="!$comment->getFile()">Review summary updated</h5>
+<h2 n:if="$comment->getFile()">Updated at <code>{$comment->getFile()}:{$comment->getLine()}</code></h2>
+<h2 n:if="!$comment->getFile()">Review summary updated</h2>
 
 {if $oldText !== $comment->getText()}
-<h6>Previous version:</h6>
-{$oldText|markdown|noescape}
+<h3>Previous version</h3>
+<blockquote>{$oldText|markdown|noescape}</blockquote>
 
-<h6>New version:</h6>
+<h3>New version</h3>
 {/if}
 
-{$comment->getText()|markdown|noescape}
+<blockquote>{$comment->getText()|markdown|noescape}</blockquote>
 
 <p n:if="$issueChanged">
     The type of the comment changed from
@@ -28,6 +39,4 @@
     <strong>{$comment->isIssue() ? 'an issue' : 'a regular comment'}</strong>.
 </p>
 
-<p>
-    The complete review is available at: <a href="{$codeUrl}">{$codeUrl}</a>
-</p>
+{button($codeUrl, 'Open the full review')|noescape}

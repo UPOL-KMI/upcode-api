@@ -1,10 +1,30 @@
 {emailSubject}Termín odevzdání úlohy se blíží - {$assignment}{/emailSubject}
-<h3>Termín odevzdání úlohy '{$assignment}' se nezadržitelně blíží</h3>
+<h1>Termín odevzdání úlohy '{$assignment}' se nezadržitelně blíží</h1>
+
 <p>
-    Úloha '{$assignment}' zadaná ve skupině '{$group}' má první termín odevzdání
-    nastaven na {$firstDeadline|localizedDate:'cs'}{if $allowSecondDeadline} a druhý termín na
-    {$secondDeadline|localizedDate:'cs'}{/if}.
     Rádi bychom vás upozornili, že termín odevzdání se blíží, avšak váš seznam odevzdaných řešení
     k této úloze dosud zeje prázdnotou.
-    Detail se zadáním úlohy se nachází na následující adrese: <a href="{$link}">{$link}</a>.
 </p>
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Skupina</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Název úlohy</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">První termín</td>
+        <td class="v">{$firstDeadline|localizedDate:'cs'}</td>
+    </tr>
+    {if $allowSecondDeadline}
+    <tr>
+        <td class="k">Druhý termín</td>
+        <td class="v">{$secondDeadline|localizedDate:'cs'}</td>
+    </tr>
+    {/if}
+</table>
+
+{button($link, 'Otevřít zadání')|noescape}

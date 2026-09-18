@@ -1,14 +1,28 @@
-{emailSubject}Solution reviewed reopened{/emailSubject}
-
-<h3>A solution revirew was re-opened!</h3>
+{emailSubject}Solution review reopened{/emailSubject}
+<h1>A solution review was re-opened!</h1>
 
 <p>
-    A review of solution <strong>#{$attempt}</strong> (submitted at <strong>{$submitted|localizedDate:'en'}</strong>)
-    of the assignment <strong>{$assignment}</strong> in the group <strong>{$group}</strong>
-    that was closed by the teacher at <strong>{$closed|localizedDate:'en'}</strong> was <strong>re-opened</strong> for modifications.
+    The review of your solution was <strong>re-opened</strong> for modifications.
     It means that major modifications of the review are likely to be expected.
 </p>
 
-<p>
-    The solution detail can be accessed via this link: <a href="{$detailUrl}">{$detailUrl}</a>
-</p>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Group</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Assignment</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">Solution</td>
+        <td class="v">#{$attempt}, submitted at {$submitted|localizedDate:'en'}</td>
+    </tr>
+    <tr>
+        <td class="k">Review closed</td>
+        <td class="v">{$closed|localizedDate:'en'}</td>
+    </tr>
+</table>
+
+{button($detailUrl, 'Open the solution')|noescape}

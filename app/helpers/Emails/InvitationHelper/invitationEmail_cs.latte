@@ -1,9 +1,22 @@
 {emailSubject}Uživatel {$host} vás zve do aplikace {$siteName}!{/emailSubject}
-<h3>Pozvánka do aplikace {$siteName}</h3>
-<p>
-    Byla vám vystavena pozvánka do aplikace {$siteName} na jméno {$username} s jejíž pomocí se můžete zaregistrovat: <a href="{$link}">{$link}</a>
-</p>
+<h1>Pozvánka do aplikace {$siteName}</h1>
 
 <p>
-    Pozvánku vám vystavil <a href="mailto:{$hostmail}">{$host}</a> a její platnost vyprší {$expireAt|localizedDate:'cs'}.
+    Byla vám vystavena pozvánka do aplikace {$siteName} na jméno <strong>{$username}</strong>,
+    s jejíž pomocí se můžete zaregistrovat.
 </p>
+
+{button($link, 'Dokončit registraci')|noescape}
+
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Pozvánku vystavil</td>
+        <td class="v"><a href="mailto:{$hostmail}">{$host}</a></td>
+    </tr>
+    <tr>
+        <td class="k">Platnost vyprší</td>
+        <td class="v">{$expireAt|localizedDate:'cs'}</td>
+    </tr>
+</table>
+
+{linkFallback($link, 'Pokud tlačítko nefunguje, otevřete tuto adresu:')|noescape}

@@ -1,46 +1,44 @@
 {emailSubject}Solution of {$assignment} reviewed{/emailSubject}
+<h1>A solution was reviewed!</h1>
 
-<h3>A solution was reviewed!</h3>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Group</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Assignment</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">Solution</td>
+        <td class="v">#{$attempt}, submitted at {$submitted|localizedDate:'en'}</td>
+    </tr>
+    <tr>
+        <td class="k">Outcome</td>
+        <td class="v">{if !$issues && !$comments}no issues and no comments{else}{count($issues) ? count($issues) : 'no'} issues to be resolved, {count($comments) ? count($comments) : 'no'} comments{/if}</td>
+    </tr>
+</table>
 
-<p>
-    Your solution <strong>#{$attempt}</strong> (submitted at <strong>{$submitted|localizedDate:'en'}</strong>)
-    of the assignment <strong>{$assignment}</strong> in the group <strong>{$group}</strong> was reviewed.
-</p>
-
-{if !$issues && !$comments}
-<p>
-    There are no issues to be resolved and no comments in the review.
-</p>
-{else}
-<p>
-    There are {count($issues) ? count($issues) : 'no'} issues to be resolved
-    and {count($comments) ? count($comments) : 'no'} comments in the review:
-    <a href="{$codeUrl}">{$codeUrl}</a>
-</p>
-{/if}
+{button($codeUrl, 'Open the full review')|noescape}
 
 {if $summary}
-<h4>Review summary:</h4>
+<h2>Review summary</h2>
+<blockquote n:foreach="$summary as $summaryComment">{$summaryComment->getText()|markdown|noescape}</blockquote>
 {/if}
-
-<div n:foreach="$summary as $summaryComment">
-    {$summaryComment->getText()|markdown|noescape}
-</div>
 
 {if $issues}
-<h4>Issues to be resolved:</h4>
+<h2>Issues to be resolved</h2>
 {/if}
-
 <div n:foreach="$issues as $issue">
-    <h5>... at <code>{$issue->getFile()}:{$issue->getLine()}</code> ...</h5>
-    {$issue->getText()|markdown|noescape}
+    <h3>At <code>{$issue->getFile()}:{$issue->getLine()}</code></h3>
+    <blockquote>{$issue->getText()|markdown|noescape}</blockquote>
 </div>
 
 {if $comments && count($comments) <= 5}
-<h4>Comments:</h4>
-
+<h2>Comments</h2>
 <div n:foreach="$comments as $comment">
-    <h5>... at <code>{$comment->getFile()}:{$comment->getLine()}</code> ...</h5>
-    {$comment->getText()|markdown|noescape}
+    <h3>At <code>{$comment->getFile()}:{$comment->getLine()}</code></h3>
+    <blockquote>{$comment->getText()|markdown|noescape}</blockquote>
 </div>
 {/if}

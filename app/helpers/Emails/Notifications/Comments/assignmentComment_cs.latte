@@ -1,16 +1,17 @@
 {emailSubject}Nový komentář k zadané úloze - {$assignment}{/emailSubject}
-<h3>Nový komentář ve veřejné diskusi k zadané úloze '{$assignment}'</h3>
-<p><code>{$comment}</code></p>
-<p>
-    Komentář byl přidán uživatelem '{$author}' {$date|localizedDate:'cs'}
-    k zadané úloze '{$assignment}' ve skupině '{$group}'.
-    Komentář je možné najít na stránce zadané úlohy: <a href="{$link}">{$link}</a>.
-</p>
+<h1>Nový komentář ve veřejné diskusi k zadané úloze '{$assignment}'</h1>
+
+<blockquote>{$comment}</blockquote>
+
+<p>Komentář byl přidán uživatelem '{$author}' {$date|localizedDate:'cs'} k zadané úloze '{$assignment}' ve skupině '{$group}'.</p>
+
 {if $otherComments > 0}
-<p>
+<p class="quiet">
     {if $otherComments == 1}Do diskuse mezi tím přibyl další komentář.
     {elseif $otherComments < 5}Do diskuse mezi tím přibyly {$otherComments} další komentáře.
     {else}Do diskuse mezi tím přibylo {$otherComments} dalších komentářů.{/if}
     Výše je ten poslední; ostatní najdete na stejné stránce.
 </p>
 {/if}
+
+{button($link, 'Otevřít diskusi')|noescape}

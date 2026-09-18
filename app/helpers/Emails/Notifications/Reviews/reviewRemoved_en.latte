@@ -1,14 +1,28 @@
-{emailSubject}Solution reviewed removed{/emailSubject}
-
-<h3>A solution revirew was erased!</h3>
+{emailSubject}Solution review removed{/emailSubject}
+<h1>A solution review was erased!</h1>
 
 <p>
-    A review of solution <strong>#{$attempt}</strong> (submitted at <strong>{$submitted|localizedDate:'en'}</strong>)
-    of the assignment <strong>{$assignment}</strong> in the group <strong>{$group}</strong>
-    that was closed at <strong>{$closed|localizedDate:'en'}</strong> was <strong>deleted</strong>.
+    The review of your solution was <strong>deleted</strong>.
     All source code issues and comments were removed along with the review.
 </p>
 
-<p>
-    The solution detail can be accessed via this link: <a href="{$detailUrl}">{$detailUrl}</a>
-</p>
+<table role="presentation" class="facts" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="k">Group</td>
+        <td class="v">{$group}</td>
+    </tr>
+    <tr>
+        <td class="k">Assignment</td>
+        <td class="v">{$assignment}</td>
+    </tr>
+    <tr>
+        <td class="k">Solution</td>
+        <td class="v">#{$attempt}, submitted at {$submitted|localizedDate:'en'}</td>
+    </tr>
+    <tr>
+        <td class="k">Review closed</td>
+        <td class="v">{$closed|localizedDate:'en'}</td>
+    </tr>
+</table>
+
+{button($detailUrl, 'Open the solution')|noescape}
