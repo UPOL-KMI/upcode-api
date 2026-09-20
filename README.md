@@ -31,6 +31,7 @@
 > | Deprecation notices are not logged (`Bootstrap::boot`) | Nette 3.2 raises them for this application's own router construction on every request -- about 87 KB of `error.log` per request, measured, and a 35.7 GB log after six weeks of light use. It has to be set *after* `enableTracy()`, which resets `error_reporting` to `E_ALL` itself. |
 > | A data-only exercise needs no reference solution (`AssignmentsPresenter::actionCreate`) | A reference solution proves the automatic tests work. An exercise that runs none of the student's code has no such claim to check, and the demand is invisible until the assignment is refused. |
 > | `ExerciseData::isDataOnly()` | The notion the three above are written against: an exercise whose every runtime environment is `data-linux`. |
+> | A *Cvičící s rozšířenými právy* may open a subgroup (`permissions.neon`) | Upstream withholds `addSubgroup` from everyone but a group's admin, and admin membership inherits down the whole subtree -- so letting a teacher run their own course under a shared parent meant handing them every other course beneath it. Supervisor membership is direct-only, which is what makes the grant containable. |
 >
 > **What is expected to change here.** Three compatibility fixes that today live as a build-time
 > patch script in the deployment repository (`services/api/patch-compatibility.php`) and belong in

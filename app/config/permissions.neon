@@ -292,6 +292,26 @@ permissions:
           - archive
       conditions: group.isAdmin
 
+    # UPcode: a direct supervisor holding this role may open a subgroup of a group they teach.
+    # Upstream withholds `addSubgroup` from everyone but a group's admin (see the rule above this
+    # pair), and group-admin membership inherits down the whole subtree -- so the only way to let a
+    # teacher run their own course under a shared parent was to make them admin of the parent,
+    # which hands them every other course beneath it as well. Supervisor membership is direct-only,
+    # which is what makes this containable.
+    #
+    # First match wins (AuthorizatorBuilder), so the admin rule above still answers for admins and
+    # this one is reached only by a direct supervisor. `isSupervisorOrAdmin` is *direct* supervisor
+    # or inherited admin, so a supervisor of a parent cannot open subgroups in its children.
+    - allow: true
+      resource: group
+      role: empowered-supervisor
+      actions:
+          - addSubgroup
+      conditions:
+          - group.isSupervisorOrAdmin
+          - group.isNotArchived
+          - group.isNotExam
+
     - allow: true
       resource: group
       role: supervisor-student
