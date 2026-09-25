@@ -285,10 +285,10 @@ class InstancesPresenter extends BasePresenter
         $validUntil = $req->getPost("validUntil") ? new \DateTime(
             $req->getPost("validUntil")
         ) : $licence->getValidUntil();
-        $isValid = $req->getPost("isValid") ? filter_var(
-            $req->getPost("isValid"),
-            FILTER_VALIDATE_BOOLEAN
-        ) : $licence->isValid();
+        // Compared against null for the same reason as elsewhere: tested for truthiness, an explicit
+        // false would be read as absent and the licence could never be switched off.
+        $isValid = $req->getPost("isValid");
+        $isValid = $isValid !== null ? filter_var($isValid, FILTER_VALIDATE_BOOLEAN) : $licence->isValid();
 
         $licence->setNote($req->getPost("note") ?: $licence->getNote());
         $licence->setValidUntil($validUntil);

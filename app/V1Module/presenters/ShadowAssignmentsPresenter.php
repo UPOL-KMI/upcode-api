@@ -202,10 +202,11 @@ class ShadowAssignmentsPresenter extends BasePresenter
         // old values of some attributes
         $wasPublic = $assignment->isPublic();
         $isPublic = filter_var($req->getPost("isPublic"), FILTER_VALIDATE_BOOLEAN);
-        $sendNotification = $req->getPost("sendNotification") ? filter_var(
-            $req->getPost("sendNotification"),
-            FILTER_VALIDATE_BOOLEAN
-        ) : true;
+        // Compared against null, not tested for truthiness: a JSON body carries a real boolean, so
+        // a declined notification arrives here as false and a truthiness test would read it as absent
+        // and default to sending. Same shape as AssignmentsPresenter::actionUpdateDetail().
+        $sendNotification = $req->getPost("sendNotification");
+        $sendNotification = $sendNotification !== null ? filter_var($sendNotification, FILTER_VALIDATE_BOOLEAN) : true;
 
         $assignment->incrementVersion();
         $assignment->updatedNow();
